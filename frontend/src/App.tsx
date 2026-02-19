@@ -1,0 +1,56 @@
+import { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Sidebar } from './components';
+import { ThemeProvider, I18nProvider, PinProvider } from './contexts';
+import {
+  Dashboard,
+  BlocksPage,
+  WalletPage,
+  TransactionsPage,
+  StakingPage,
+  NetworkPage,
+  SwapPage,
+  NFTGallery,
+  NFTMint,
+  NFTCollections,
+  NFTCollectionDetail
+} from './pages';
+import './App.css';
+
+function App() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  return (
+    <ThemeProvider>
+      <I18nProvider>
+        <PinProvider>
+          <div className={`app-layout ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+            <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+            <main className="main-content">
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/blocks" element={<BlocksPage />} />
+                <Route path="/wallet" element={<WalletPage />} />
+                <Route path="/transactions" element={<TransactionsPage />} />
+                <Route path="/staking" element={<StakingPage />} />
+                <Route path="/swap" element={<SwapPage />} />
+                <Route path="/network" element={<NetworkPage />} />
+
+                {/* NFT Routes */}
+                <Route path="/nft" element={<NFTGallery />} />
+                <Route path="/nft/mint" element={<NFTMint />} />
+                <Route path="/nft/collections" element={<NFTCollections />} />
+                <Route path="/nft/collections/:id" element={<NFTCollectionDetail />} />
+
+                {/* Fallback */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </main>
+          </div>
+        </PinProvider>
+      </I18nProvider>
+    </ThemeProvider>
+  );
+}
+
+export default App;
