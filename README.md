@@ -4,6 +4,7 @@
 
 - CLI reference: `docs/CLI.md`
 - Сайт и демо: [lvenc.site](https://lvenc.site)
+- Swagger Docs: [api.lvenc.site/api/docs/](https://api.lvenc.site/api/docs/)
 
 ## Быстрый старт
 
@@ -161,6 +162,7 @@ lve-chain peers [-p <port>]
 ## Ссылки
 
 - Сайт и демо: [lvenc.site](https://lvenc.site)
+- Swagger Docs: [api.lvenc.site/api/docs/](https://api.lvenc.site/api/docs/)
 - CLI reference: [docs/CLI.md](docs/CLI.md)
 - VPS Bootstrap Guide: [docs/VPS_BOOTSTRAP_GUIDE.md](docs/VPS_BOOTSTRAP_GUIDE.md)
 - Wallet Guide: [docs/WALLET.md](docs/WALLET.md)
