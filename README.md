@@ -1,203 +1,167 @@
-# EDU Chain Node
+# LVE Chain
 
-Educational Blockchain Network with Proof-of-Stake consensus.
+Актуальное руководство по запуску и управлению нодой LVE Chain.
 
-## 🚀 Quick Start (One Line!)
+- CLI reference: `docs/CLI.md`
+- Сайт и демо: [lvenc.site](https://lvenc.site)
 
-### Testnet
+## Быстрый старт
+
 ```bash
-./run_testnet.sh
-```
+# Запустить ноду с ролью
+lve-chain start --role rpc --network testnet
 
-### Mainnet
-```bash
-./run_mainnet.sh
+# Посмотреть identity
+lve-chain identity
+
+# Привязать reward address
+lve-chain reward generate
 ```
 
 ---
 
-## 📦 Installation
+## Команды
 
-### Option 1: From Source (Recommended)
+### `lve-chain start`
 
-```bash
-# Clone the repository
-git clone https://github.com/abdulloh5007/lvenc-blockchain.git
-cd lvenc-blockchain
-
-# Install dependencies
-npm install
-
-# Build
-npm run build
-
-# Start testnet node
-./run_testnet.sh
-```
-
-### Option 2: Manual Start
+Запуск ноды с указанием роли.
 
 ```bash
-# Testnet
-npx edu-chain start --network testnet
-
-# Mainnet
-npx edu-chain start --network mainnet
+lve-chain start [options]
 ```
 
-### Option 3: Docker
+| Опция | Описание | По умолчанию |
+|-------|----------|--------------|
+| `-r, --role <role>` | Роль ноды (`full` / `validator` / `rpc` / `light`) | - |
+| `-n, --network <name>` | Сеть (`mainnet` / `testnet`) | `mainnet` |
+| `-p, --port <number>` | API порт | `3001` |
+| `--p2p <number>` | P2P порт | `6001` |
+| `-d, --data <path>` | Папка данных | `./data` |
+| `-s, --seed <url>` | Seed нода для подключения | - |
+| `--no-api` | Запуск без API сервера | - |
+| `-b, --bootstrap` | Режим bootstrap ноды | - |
+
+**Роли:**
+
+| Роль | P2P | API | Block Prod | Staking |
+|------|-----|-----|------------|---------|
+| `full` | ✅ | ❌ | ❌ | ❌ |
+| `validator` | ✅ | ❌ | ✅ | ✅ |
+| `rpc` | ✅ | ✅ | ❌ | ❌ |
+| `light` | headers | ❌ | ❌ | ❌ |
+
+**Примеры:**
 
 ```bash
-# Build the image
-docker build -t edu-chain-node .
+# RPC нода с API
+lve-chain start --role rpc --network testnet
 
-# Run the node
-docker run -d -p 3001:3001 -p 6001:6001 edu-chain-node
+# Full node, подключенная к seed
+lve-chain start --role full --seed wss://seed1.lvenc.site
+
+# Validator с кастомными портами
+lve-chain start --role validator -p 4001 --p2p 7001
 ```
 
-## 📖 Commands
+---
 
-> 📚 **Полная документация:** [docs/CLI.md](docs/CLI.md)
+### `lve-chain identity`
 
-### Quick Reference
+Показать криптографическую identity ноды.
 
 ```bash
-# Запуск ноды
-edu-chain start -n testnet
-
-# Показать identity
-edu-chain identity
-
-# Привязать reward address
-edu-chain reward generate      # Создать новый кошелёк
-edu-chain reward bind <addr>   # Использовать существующий
-edu-chain reward show          # Показать текущий
-
-# Статус
-edu-chain status
-edu-chain peers
+lve-chain identity [options]
 ```
 
-### Start Node
+| Опция | Описание |
+|-------|----------|
+| `-d, --data-dir <path>` | Папка данных |
+| `--export` | Экспорт в JSON формате |
+
+---
+
+### `lve-chain reward`
+
+Управление `reward address` для получения наград валидатора.
+
+#### `reward show`
 
 ```bash
-edu-chain start [options]
+lve-chain reward show
 ```
 
-**Options:**
-- `-p, --port <number>` - API server port (default: 3001)
-- `--p2p <number>` - P2P server port (default: 6001)
-- `-s, --seed <url>` - Seed node URL to connect to
-- `-d, --data <path>` - Data directory path (default: ./data)
-- `-n, --network <name>` - Network name: mainnet/testnet (default: mainnet)
-- `--no-api` - Run without API server (P2P only)
-- `-b, --bootstrap` - Run as bootstrap node (peer discovery only)
-- `--api-only` - Run API server only (no P2P participation)
-
-### Node Modes
-
-| Mode | Command | Description |
-|------|---------|-------------|
-| **Full Node** | `edu-chain start` | Full participant: sync, validate, stake, produce blocks |
-| **Bootstrap** | `edu-chain start --bootstrap` | Peer discovery only, no blocks |
-| **API-Only** | `edu-chain start --api-only` | Read-only API, no P2P |
-
-**Examples:**
+#### `reward bind <address>`
 
 ```bash
-# Start with default settings
-edu-chain start
-
-# Start on custom ports
-edu-chain start --port 3005 --p2p 6005
-
-# Connect to a specific seed node
-edu-chain start --seed ws://seed.educhain.io:6001
-
-# Run as testnet node
-edu-chain start --network testnet
+lve-chain reward bind tLVE_your_wallet_address
 ```
 
-### Check Status
+#### `reward generate`
 
 ```bash
-edu-chain status
+lve-chain reward generate
 ```
 
-### Show Connected Peers
+**Важно:** мнемоник показывается только один раз.
+
+---
+
+### `lve-chain status`
+
+Показать статус работающей ноды.
 
 ```bash
-edu-chain peers
+lve-chain status [-p <port>]
 ```
 
-## 🌐 Running Multiple Nodes
+---
 
-Use Docker Compose to run a local network of 3 nodes:
+### `lve-chain peers`
+
+Показать подключенных пиров.
 
 ```bash
-docker-compose up -d
+lve-chain peers [-p <port>]
 ```
 
-This will start:
-- **Node 1**: API on port 3001, P2P on port 6001
-- **Node 2**: API on port 3002, P2P on port 6002
-- **Node 3**: API on port 3003, P2P on port 6003
+---
 
-## 💰 Staking
+## Runners
 
-To become a validator and earn block rewards:
-
-1. Create a wallet
-2. Get some EDU tokens
-3. Stake at least 100 EDU
+Предустановленные сценарии запуска:
 
 ```bash
-# Check staking API
-curl http://localhost:3001/api/staking
+# RPC node с API
+./runners/rpc/start.sh
+
+# Full node
+./runners/full/start.sh
+
+# Validator node
+./runners/validator/start.sh
+
+# Light node
+./runners/light/start.sh
 ```
 
-## 📚 API Documentation
+---
 
-Once the node is running, visit:
-- **Swagger UI**: http://localhost:3001/docs
-- **Health Check**: http://localhost:3001/health
+## Файлы данных
 
-## 📁 Data Directory Structure
+| Файл | Описание |
+|------|----------|
+| `data/<network>/identity.key` | Криптографическая identity (Ed25519) |
+| `data/<network>/blocks.json` | Данные блокчейна |
+| `data/<network>/staking.json` | Данные стейкинга |
 
-```
-data/
-├── mainnet/
-│   ├── blockchain.json
-│   └── staking.json
-└── testnet/
-    ├── blockchain.json
-    └── staking.json
-```
+**Важно:** `identity.key` содержит приватный ключ. Никогда не делитесь им.
 
-## ⚙️ Configuration
+---
 
-Create a `.env` file in the project root:
+## Ссылки
 
-```env
-API_PORT=3001
-P2P_PORT=6001
-NETWORK=mainnet
-DATA_DIR=./data
-```
-
-## 🔧 System Requirements
-
-- **Node.js**: v18 or higher
-- **RAM**: 512MB minimum
-- **Storage**: 1GB for blockchain data
-- **Network**: Stable internet connection
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request
-
-## 📄 License
-
-MIT License
+- Сайт и демо: [lvenc.site](https://lvenc.site)
+- CLI reference: [docs/CLI.md](docs/CLI.md)
+- VPS Bootstrap Guide: [docs/VPS_BOOTSTRAP_GUIDE.md](docs/VPS_BOOTSTRAP_GUIDE.md)
+- Wallet Guide: [docs/WALLET.md](docs/WALLET.md)
+- Runners README: [runners/README.md](runners/README.md)
